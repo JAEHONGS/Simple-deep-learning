@@ -1,0 +1,56 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Oct 28 23:14:40 2021
+
+@author: user
+"""
+
+import pandas as pd
+import numpy as np
+from scipy import stats
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
+import tensorflow as tf
+from tensorflow import keras
+import autokeras as ak
+from tensorflow.keras.utils import plot_model
+
+from imblearn.over_sampling import RandomOverSampler
+from sklearn.model_selection import train_test_split
+
+sns.set(style = 'darkgrid')
+planets = sns.load_dataset('planets')
+
+x_ = planets.iloc[:, 1:6]
+y_ = planets.iloc[:, 0]
+
+x_ = x_.interpolate()
+y_ = y_.interpolate()
+
+x_train_res, y_train_res = RandomOverSampler().fit_resample(x_, y_)
+
+x_train, x_test, y_train, y_test = train_test_split(x_train_res, y_train_res, test_size = 0.25, shuffle = True)
+
+clf = ak.StructuredDataClassifier(
+    overwrite=True, max_trials=5
+)
+
+early_stopping = keras.callbacks.EarlyStopping(monitor="val_loss", patience=10)
+reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor="val_loss", patience=5)
+
+clf.fit(
+    x_train, y_train,
+    epochs=200,
+    callbacks=[early_stopping, reduce_lr],
+    validation_split=0.15
+)
+
+model = clf.export_model()
+model.summary()
+
+clf.evaluate(x_test, y_test)
+
+plot_model(model, to_file='./clf.png')
