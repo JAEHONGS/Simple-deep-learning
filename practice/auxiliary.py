@@ -22,8 +22,8 @@ def accuracy(y_batch,t_batch) :
 
 def numerical_gradient(f, x):
     
-    h = 1e-4
-    grad = np.zeros_like(x)
+    h = 1e-4                                     #유한차분법을 이용해서 수치적으로 도함수를 구함
+    grad = np.zeros_like(x)                      #(배열의 iterator를 이용했기 때문에 x가 몇 차원 벡터인가에 관계없이 작동)
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     
     while not it.finished:
