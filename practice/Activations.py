@@ -7,7 +7,7 @@ Created on Sat Dec  4 18:12:39 2021
 
 import numpy as np
 
-class ReLU :
+class ReLU() :
     
     def __init__(self) :
         self.p_ = {}
