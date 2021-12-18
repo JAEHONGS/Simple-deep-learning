@@ -27,3 +27,19 @@ class ReLU :
         dX[mask] = 0.
 
         return dX
+
+class Sigmoid() :
+    
+    def __init__(self) :
+        self.Y = None
+        
+    def forward(self, x):
+        Y = 1 / (1 + np.exp(-x))
+        self.Y = Y
+        
+        return Y
+    
+    def backward(self, dY):
+        dx = dY * (1.0 - self.Y) * self.Y
+        
+        return dx
